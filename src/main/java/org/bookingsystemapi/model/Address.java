@@ -1,8 +1,5 @@
 package org.bookingsystemapi.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class Address {
 
     private int id;

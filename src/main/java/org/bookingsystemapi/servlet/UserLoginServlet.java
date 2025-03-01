@@ -37,7 +37,7 @@ public class UserLoginServlet {
         try {
             User user = userLoginService.authenticateUser(loginInput, password);
             if (user == null) {
-                return Response.status(Response.Status.UNAUTHORIZED)
+                return Response.status(Response.Status.FORBIDDEN)
                         .entity("{\"error\": \"Invalid email/phone or password\"}")
                         .build();
             }
@@ -49,8 +49,8 @@ public class UserLoginServlet {
             return Response.ok(successMessage).build();
 
         } catch (SQLException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\": \"Database error occurred\"}")
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+                    .entity("{\"error\": \"Database is temporarily unavailable. Please try again later.\"}")
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

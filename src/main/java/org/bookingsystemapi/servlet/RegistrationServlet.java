@@ -34,10 +34,15 @@ public class RegistrationServlet {
                     .entity("{\"message\": \"Registration successful\"}").build();
 
         } catch (SQLException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            if (e.getMessage().contains("Email or Phone Number already exists.")) {
+                return Response.status(Response.Status.CONFLICT)
+                        .entity("{\"error\": \"Email or Phone Number already exists.\"}").build();
+            }
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("{\"error\": \"Database error occurred.\"}").build();
         } catch (NoSuchAlgorithmException e) {
            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                   .entity("{\"error\": unexpected error}").build();
+                   .entity("{\"error\": \"unexpected error\"}").build();
         }
     }
 }

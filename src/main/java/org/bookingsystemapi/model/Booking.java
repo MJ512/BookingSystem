@@ -1,9 +1,8 @@
 package org.bookingsystemapi.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Booking {
@@ -15,7 +14,6 @@ public class Booking {
     private int showId;
     private int screenId;
     private List<Integer> seatIds;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     private Instant bookingTime;
     private boolean isConfirmed;
 
@@ -29,8 +27,10 @@ public class Booking {
         this.movieId = movieId;
         this.showId = showId;
         this.screenId = screenId;
-        this.seatIds = new ArrayList<>();
-        this.bookingTime = bookingTime;
+        this.seatIds = (seatIds != null) ? Collections.unmodifiableList(new ArrayList<>(seatIds))
+                : Collections.emptyList();
+
+        this.bookingTime = (bookingTime != null) ? bookingTime : Instant.now();
         this.isConfirmed = isConfirmed;
     }
 

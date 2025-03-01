@@ -1,6 +1,7 @@
 package org.bookingsystemapi.service;
 
 import org.bookingsystemapi.dao.UserDashboardDAO;
+import org.bookingsystemapi.model.Booking;
 import org.bookingsystemapi.model.User;
 import org.bookingsystemapi.validation.HashPassword;
 
@@ -9,13 +10,20 @@ import java.util.List;
 public class UserDashboardService {
     private final UserDashboardDAO userDAO = new UserDashboardDAO();
 
-    public List<User> getBookingHistory(int userId) {
+    public List<Booking> getBookingHistory(int userId) {
         return userDAO.getUserBookingHistory(userId);
     }
 
     public boolean updateUserInfo(int userId, String password, User user) {
         User existingUser = userDAO.getUserById(userId);
-        if (existingUser != null && HashPassword.verifyPassword(password, existingUser.getPassword())) {
+
+        // Ensure user exists before checking password
+        if (existingUser == null) {
+            return false;
+        }
+
+        // Verify password before allowing the update
+        if (HashPassword.verifyPassword(password, existingUser.getPassword())) {
             return userDAO.updateUser(userId, user);
         }
         return false;
@@ -23,29 +31,25 @@ public class UserDashboardService {
 
     public boolean changePassword(int userId, String oldPassword, String newPassword) {
         User user = userDAO.getUserById(userId);
-        if (user != null && HashPassword.verifyPassword(oldPassword, user.getPassword())) {
-            String hashedPassword = HashPassword.hashPassword(newPassword);
-            return userDAO.updatePassword(userId, hashedPassword);
+
+        // Ensure user exists before checking password
+        if (user == null) {
+            return false;
         }
-        return false;
-    }
 
-    public boolean sendPasswordResetLink(String emailOrPhone) {
-        User user = userDAO.getUserByEmailOrPhone(emailOrPhone);
-        if (user != null) {
-            String resetToken = generateResetToken();
-            userDAO.storePasswordResetToken(user.getUserId(), resetToken);
-            sendResetEmail(user.getEmail(), resetToken);
-            return true;
+        // Verify the old password before allowing the update
+        if (!HashPassword.verifyPassword(oldPassword, user.getPassword())) {
+            return false;
         }
-        return false;
-    }
 
-    private String generateResetToken() {
-        return java.util.UUID.randomUUID().toString();
-    }
+        // Hash the new password
+        String hashedPassword = HashPassword.hashPassword(newPassword);
 
-    private void sendResetEmail(String email, String resetToken) {
-        System.out.println("Sending password reset link to: " + email + " with token: " + resetToken);
+        // Ensure hashing didn't fail before updating
+        if (hashedPassword == null || hashedPassword.isEmpty()) {
+            return false;
+        }
+
+        return userDAO.updatePassword(userId, hashedPassword);
     }
 }

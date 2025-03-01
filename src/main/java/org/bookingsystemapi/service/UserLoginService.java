@@ -1,5 +1,6 @@
 package org.bookingsystemapi.service;
 
+import org.bookingsystemapi.dao.UserDAO;
 import org.bookingsystemapi.database.PostgreSQLConnection;
 import org.bookingsystemapi.model.User;
 import org.bookingsystemapi.validation.HashPassword;
@@ -11,43 +12,21 @@ import java.sql.SQLException;
 
 public class UserLoginService {
 
+    private final UserDAO userDAO;
+
+    public UserLoginService() {
+        this.userDAO = new UserDAO();
+    }
+
     public User authenticateUser(String loginInput, String password) throws SQLException {
 
-        try (Connection connection = PostgreSQLConnection.getConnection()) {
-            if (connection == null) {
-                throw new SQLException("Database Connection Failed");
-            }
+        User user = userDAO.getUserByEmailOrPhone(loginInput);
 
-            String loginQuery = "SELECT id, name, email, phone, password FROM users WHERE email = ? OR phone = ?";
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(loginQuery)) {
-                preparedStatement.setString(1, loginInput);
-                preparedStatement.setString(2, loginInput);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (!resultSet.next()) {
-                        return null;
-                    }
-
-                    String storedPassword = resultSet.getString("password");
-
-                    if(!HashPassword.verifyPassword(password, storedPassword)){
-                        throw new SQLException("Invalid credentials");
-                    }
-
-                    // Return User object with the retrieved data
-                    return new User(
-                            resultSet.getInt("id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("email"),
-                            resultSet.getString("phone"),
-                            null
-                    );
-                }
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (user == null || !HashPassword.verifyPassword(password, user.getPassword())) {
+            throw new SQLException("Invalid credentials");
         }
+
+        // Return User object WITHOUT the password for security
+        return new User(user.getUserId(), user.getName(), user.getEmail(), user.getPhone());
     }
 }

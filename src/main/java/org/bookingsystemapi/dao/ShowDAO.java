@@ -1,9 +1,11 @@
 package org.bookingsystemapi.dao;
 
+import jakarta.inject.Singleton;
 import org.bookingsystemapi.database.PostgreSQLConnection;
 
 import java.sql.*;
 
+@Singleton
 public class ShowDAO {
 
     public boolean hasShowStarted(int showId) {

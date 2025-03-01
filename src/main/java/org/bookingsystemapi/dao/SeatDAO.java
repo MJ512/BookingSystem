@@ -8,33 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class SeatDAO {
 
-    public boolean updateSeatAvailability(List<Integer> seatIds, boolean isBooked) {
-        String query = "UPDATE show_seats SET is_booked = ? WHERE seat_id = ?";
-
-        try (Connection connection = PostgreSQLConnection.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            connection.setAutoCommit(false);
-
-            for (int seatId : seatIds) {
-                stmt.setBoolean(1, isBooked);
-                stmt.setInt(2, seatId);
-                stmt.addBatch();
-            }
-
-            int[] updatedRows = stmt.executeBatch();
-            connection.commit();
-            return updatedRows.length == seatIds.size();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
+    private static final Logger logger = Logger.getLogger(SeatDAO.class.getName());
 
     public List<Integer> getSeatIdsByBookingId(int bookingId) {
         String query = "SELECT show_seat_id FROM booking_seats WHERE booking_id = ?";
@@ -47,10 +25,10 @@ public class SeatDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                seatIds.add(resultSet.getInt("seat_id"));
+                seatIds.add(resultSet.getInt("show_seat_id")); // Fixed column name
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.severe("Database error in getSeatIdsByBookingId: " + e.getMessage());
         }
         return seatIds;
     }

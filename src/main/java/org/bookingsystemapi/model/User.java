@@ -1,9 +1,5 @@
 package org.bookingsystemapi.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
-
 public class User {
     private int userId;
     private String name;
@@ -19,6 +15,13 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.password = password;
+    }
+
+    public User(int userId, String name, String email, String phone) {
+        this.userId = userId;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
     }
 
     public int getUserId() {

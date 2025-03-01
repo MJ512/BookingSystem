@@ -1,5 +1,6 @@
 package org.bookingsystemapi.validation;
 
+import jakarta.inject.Inject;
 import org.bookingsystemapi.dao.ValidationDAO;
 
 import java.util.List;
@@ -8,6 +9,7 @@ public class BookingValidator {
 
     private final ValidationDAO validationDAO;
 
+    @Inject
     public BookingValidator(ValidationDAO validationDAO){
         this.validationDAO = validationDAO;
     }

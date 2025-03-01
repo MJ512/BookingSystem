@@ -1,17 +1,21 @@
 package org.bookingsystemapi.service;
 
-import org.bookingsystemapi.database.PostgreSQLConnection;
+import org.bookingsystemapi.dao.UserDAO;
 import org.bookingsystemapi.model.User;
 import org.bookingsystemapi.validation.HashPassword;
 import org.bookingsystemapi.validation.UserValidation;
 import org.bookingsystemapi.validation.Validation;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class RegistrationService {
+
+    private final UserDAO userDAO;
+
+    public RegistrationService() {
+        this.userDAO = new UserDAO();
+    }
 
     public boolean registerUser(User user) throws SQLException, NoSuchAlgorithmException{
 
@@ -36,32 +40,7 @@ public class RegistrationService {
 
         user.setPassword(hashedPassword);
 
-        try(Connection connection = PostgreSQLConnection.getConnection()){
-            connection.setAutoCommit(false);
-            String registerQuery = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
-
-            try(PreparedStatement preparedStatement = connection.prepareStatement(registerQuery)) {
-                preparedStatement.setString(1, user.getName());
-                preparedStatement.setString(2, user.getEmail());
-                preparedStatement.setString(3, user.getPhone());
-                preparedStatement.setString(4, user.getPassword());
-
-                int rowInserted = preparedStatement.executeUpdate();
-
-                if(rowInserted > 0){
-                    connection.commit();
-                    return true;
-                } else {
-                    connection.rollback();
-                    return false;
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                return false;
-            }finally {
-                connection.setAutoCommit(true);
-            }
-        }
+        return userDAO.saveUser(user);
     }
 
 }

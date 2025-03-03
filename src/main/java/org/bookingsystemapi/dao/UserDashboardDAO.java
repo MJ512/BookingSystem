@@ -9,9 +9,9 @@ import java.util.List;
 
 public class UserDashboardDAO {
     public List<Booking> getUserBookingHistory(int userId) {
-        List<Booking> bookingHistory = new ArrayList<>();
-        String bookingQuery = "SELECT * FROM bookings WHERE user_id = ?";
-        String seatQuery = "SELECT show_seat_id FROM booking_seats WHERE booking_id = ?";
+        final List<Booking> bookingHistory = new ArrayList<>();
+        final String bookingQuery = "SELECT * FROM bookings WHERE user_id = ?";
+        final String seatQuery = "SELECT show_seat_id FROM booking_seats WHERE booking_id = ?";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement bookingStmt = connection.prepareStatement(bookingQuery)) {
@@ -29,7 +29,6 @@ public class UserDashboardDAO {
                 booking.setBookingTime(bookingResult.getTimestamp("booking_time").toInstant());
                 booking.setConfirmed(bookingResult.getBoolean("is_confirmed"));
 
-                // Fetch seat IDs from booking_seats table
                 List<Integer> seatIds = new ArrayList<>();
                 try (PreparedStatement seatStmt = connection.prepareStatement(seatQuery)) {
                     seatStmt.setInt(1, booking.getId());
@@ -50,7 +49,7 @@ public class UserDashboardDAO {
 
 
     public User getUserById(int userId) {
-        String query = "SELECT * FROM users WHERE id = ?";
+        final String query = "SELECT * FROM users WHERE id = ?";
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, userId);
@@ -67,7 +66,7 @@ public class UserDashboardDAO {
     }
 
     public boolean updateUser(int userId, User user) {
-        String query = "UPDATE users SET email = ?, phone = ?, name = ? WHERE id = ?";
+        final String query = "UPDATE users SET email = ?, phone = ?, name = ? WHERE id = ?";
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, user.getEmail());
@@ -82,7 +81,7 @@ public class UserDashboardDAO {
     }
 
     public boolean updatePassword(int userId, String hashedPassword) {
-        String query = "UPDATE users SET password = ? WHERE id = ?";
+        final String query = "UPDATE users SET password = ? WHERE id = ?";
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, hashedPassword);

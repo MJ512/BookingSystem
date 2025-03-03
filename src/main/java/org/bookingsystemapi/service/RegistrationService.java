@@ -1,5 +1,7 @@
 package org.bookingsystemapi.service;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.bookingsystemapi.dao.UserDAO;
 import org.bookingsystemapi.model.User;
 import org.bookingsystemapi.validation.HashPassword;
@@ -9,12 +11,14 @@ import org.bookingsystemapi.validation.Validation;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
+@Singleton
 public class RegistrationService {
 
     private final UserDAO userDAO;
 
-    public RegistrationService() {
-        this.userDAO = new UserDAO();
+    @Inject
+    public RegistrationService(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     public boolean registerUser(User user) throws SQLException, NoSuchAlgorithmException{

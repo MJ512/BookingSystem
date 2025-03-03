@@ -1,5 +1,6 @@
 package org.bookingsystemapi.servlet;
 
+import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -12,7 +13,12 @@ import java.sql.SQLException;
 @Path("/register")
 public class RegistrationServlet {
 
-    private final RegistrationService registrationService = new RegistrationService();
+    private final RegistrationService registrationService;
+
+    @Inject
+    public RegistrationServlet(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

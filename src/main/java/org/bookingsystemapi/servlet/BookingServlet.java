@@ -64,13 +64,13 @@ public class BookingServlet {
             if (success) {
                 return Response.ok("{\"message\": \"Booking canceled successfully\"}").build();
             } else {
-                return Response.status(Response.Status.NOT_FOUND) // ✅ Use 404 if booking not found
+                return Response.status(Response.Status.NOT_FOUND)
                         .entity("{\"error\": \"Cancellation failed. Booking doesn't exist or show has started.\"}")
                         .build();
             }
         } catch (Exception e) {
             logger.severe("Unexpected error while canceling booking ID " + bookingId + ": " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR) // ✅ Handle unexpected exceptions
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\": \"Internal server error occurred\"}")
                     .build();
         }

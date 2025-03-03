@@ -1,6 +1,10 @@
 package org.bookingsystemapi.servlet;
 
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.bookingsystemapi.model.User;
@@ -11,21 +15,25 @@ import java.util.List;
 
 @Path("/users")
 public class UserDashboardServlet {
-    private final UserDashboardService userService = new UserDashboardService();
+    private final UserDashboardService userService;
 
+    @Inject
+    public UserDashboardServlet(UserDashboardService userService){
+        this.userService = userService;
+    }
     @GET
     @Path("/history/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookingHistory(@PathParam("userId") int userId) {
         try {
-            if (userId <= 0) { // Invalid userId check
+            if (userId <= 0) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("{\"error\": \"Invalid user ID format\"}")
                         .build();
             }
 
             List<Booking> history = userService.getBookingHistory(userId);
-            if (history == null || history.isEmpty()) { // No history found
+            if (history == null || history.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("{\"error\": \"No booking history found for this user\"}")
                         .build();
@@ -33,7 +41,7 @@ public class UserDashboardServlet {
 
             return Response.ok(history).build();
 
-        } catch (Exception e) { // Unexpected error
+        } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("{\"error\": \"Unexpected error occurred\"}")
                     .build();
@@ -94,5 +102,16 @@ public class UserDashboardServlet {
                     .entity("{\"error\": \"Unexpected error occurred\"}")
                     .build();
         }
+    }
+
+    @POST
+    @Path("/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logout(@Context HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return Response.ok("{\"message\": \"User logged out successfully\"}").build();
     }
 }

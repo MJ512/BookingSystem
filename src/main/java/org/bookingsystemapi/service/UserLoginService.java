@@ -1,21 +1,21 @@
 package org.bookingsystemapi.service;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.bookingsystemapi.dao.UserDAO;
-import org.bookingsystemapi.database.PostgreSQLConnection;
 import org.bookingsystemapi.model.User;
 import org.bookingsystemapi.validation.HashPassword;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Singleton
 public class UserLoginService {
 
     private final UserDAO userDAO;
 
-    public UserLoginService() {
-        this.userDAO = new UserDAO();
+    @Inject
+    public UserLoginService(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     public User authenticateUser(String loginInput, String password) throws SQLException {
@@ -26,7 +26,6 @@ public class UserLoginService {
             throw new SQLException("Invalid credentials");
         }
 
-        // Return User object WITHOUT the password for security
         return new User(user.getUserId(), user.getName(), user.getEmail(), user.getPhone());
     }
 }

@@ -15,8 +15,8 @@ public class SeatDAO {
     private static final Logger logger = Logger.getLogger(SeatDAO.class.getName());
 
     public List<Integer> getSeatIdsByBookingId(int bookingId) {
-        String query = "SELECT show_seat_id FROM booking_seats WHERE booking_id = ?";
-        List<Integer> seatIds = new ArrayList<>();
+        final String query = "SELECT show_seat_id FROM booking_seats WHERE booking_id = ?";
+        final List<Integer> seatIds = new ArrayList<>();
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

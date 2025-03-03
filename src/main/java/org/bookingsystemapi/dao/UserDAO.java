@@ -1,5 +1,6 @@
 package org.bookingsystemapi.dao;
 
+import jakarta.inject.Singleton;
 import org.bookingsystemapi.database.PostgreSQLConnection;
 import org.bookingsystemapi.model.User;
 
@@ -8,10 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Singleton
 public class UserDAO {
 
     public boolean saveUser(User user) throws SQLException {
-        String registerQuery = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
+        final String registerQuery = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(registerQuery)) {
@@ -38,7 +40,7 @@ public class UserDAO {
     }
 
     public User getUserByEmailOrPhone(String loginInput) throws SQLException {
-        String query = "SELECT id, name, email, phone, password FROM users WHERE email = ? OR phone = ?";
+        final String query = "SELECT id, name, email, phone, password FROM users WHERE email = ? OR phone = ?";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

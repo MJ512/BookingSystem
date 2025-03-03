@@ -7,8 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ValidationDAO {
+
+    private static final Logger logger = Logger.getLogger(ValidationDAO.class.getName());
 
     public boolean isValidUser(int userId) { return existsInDatabase("SELECT COUNT(*) FROM users WHERE id = ?", userId); }
     public boolean isValidTheater(int theaterId) { return existsInDatabase("SELECT COUNT(*) FROM theaters WHERE id = ?", theaterId); }
@@ -16,7 +19,7 @@ public class ValidationDAO {
     public boolean isValidShow(int showId) { return existsInDatabase("SELECT COUNT(*) FROM shows WHERE id = ?", showId); }
 
     public boolean isValidScreen(int screenId, int theaterId) {
-        String query = "SELECT COUNT(*) FROM screens WHERE id = ? AND theater_id = ?";
+        final String query = "SELECT COUNT(*) FROM screens WHERE id = ? AND theater_id = ?";
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, screenId);
@@ -30,10 +33,10 @@ public class ValidationDAO {
     }
 
     public boolean areSeatsAvailable(List<Integer> seatIds, int showId) {
-        System.out.println("Checking if seats are available for Show ID: " + showId + " | Seats: " + seatIds);
+        logger.info("Checking if seats are available for Show ID: " + showId + " | Seats: " + seatIds);
 
-        String placeholders = String.join(",", seatIds.stream().map(s -> "?").toArray(String[]::new));
-        String query = "SELECT seat_id, is_booked FROM show_seats WHERE show_id = ? AND seat_id IN (" + placeholders + ")";
+        final String placeholders = String.join(",", seatIds.stream().map(s -> "?").toArray(String[]::new));
+        final String query = "SELECT seat_id, is_booked FROM show_seats WHERE show_id = ? AND seat_id IN (" + placeholders + ")";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -55,8 +58,7 @@ public class ValidationDAO {
                     available = false;
                 }
             }
-
-            System.out.println("Seats available: " + available);
+            logger.info("Seats available: " + available);
             return available;
 
         } catch (SQLException e) {

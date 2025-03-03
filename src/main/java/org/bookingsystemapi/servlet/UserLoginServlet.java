@@ -2,6 +2,7 @@ package org.bookingsystemapi.servlet;
 
 import java.sql.SQLException;
 
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.ws.rs.POST;
@@ -18,7 +19,12 @@ import org.bookingsystemapi.service.UserLoginService;
 @Path("/login")
 public class UserLoginServlet {
 
-    private final UserLoginService userLoginService = new UserLoginService();
+    private final UserLoginService userLoginService;
+
+    @Inject
+    public UserLoginServlet(UserLoginService userLoginService){
+        this.userLoginService = userLoginService;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -37,7 +43,7 @@ public class UserLoginServlet {
         try {
             User user = userLoginService.authenticateUser(loginInput, password);
             if (user == null) {
-                return Response.status(Response.Status.FORBIDDEN)
+                return Response.status(Response.Status.UNAUTHORIZED)
                         .entity("{\"error\": \"Invalid email/phone or password\"}")
                         .build();
             }

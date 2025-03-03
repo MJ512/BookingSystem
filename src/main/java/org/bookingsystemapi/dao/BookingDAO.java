@@ -14,89 +14,80 @@ import java.util.List;
 public class BookingDAO implements BookingDAOInterface {
 
     private final SeatDAO seatDAO;
-    private final ShowDAO showDAO; // Add ShowDAO reference
     private static final Logger logger = Logger.getLogger(BookingDAO.class.getName());
 
     @Inject
-    public BookingDAO(SeatDAO seatDAO, ShowDAO showDAO) {
+    public BookingDAO(SeatDAO seatDAO) {
         this.seatDAO = seatDAO;
-        this.showDAO = showDAO; // Inject ShowDAO
     }
 
     @Override
     public int createBooking(Booking booking) {
-        String bookingQuery = "INSERT INTO bookings (user_id, theater_id, movie_id, show_id, screen_id, is_confirmed, booking_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        final String insertBookingQuery = "INSERT INTO bookings (user_id, theater_id, movie_id, show_id, screen_id, is_confirmed, booking_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        final String selectBookingIdQuery = "SELECT id FROM bookings WHERE user_id = ? AND theater_id = ? AND movie_id = ? AND show_id = ? AND screen_id = ? ORDER BY booking_time DESC LIMIT 1";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
-             PreparedStatement bookingStatement = connection.prepareStatement(bookingQuery, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement insertStatement = connection.prepareStatement(insertBookingQuery);
+             PreparedStatement selectStatement = connection.prepareStatement(selectBookingIdQuery)) {
 
             connection.setAutoCommit(false);
 
-            bookingStatement.setInt(1, booking.getUserId());
-            bookingStatement.setInt(2, booking.getTheaterId());
-            bookingStatement.setInt(3, booking.getMovieId());
-            bookingStatement.setInt(4, booking.getShowId());
-            bookingStatement.setInt(5, booking.getScreenId());
-            bookingStatement.setBoolean(6, booking.isConfirmed());
-            bookingStatement.setTimestamp(7, Timestamp.from(booking.getBookingTime()));
+            insertStatement.setInt(1, booking.getUserId());
+            insertStatement.setInt(2, booking.getTheaterId());
+            insertStatement.setInt(3, booking.getMovieId());
+            insertStatement.setInt(4, booking.getShowId());
+            insertStatement.setInt(5, booking.getScreenId());
+            insertStatement.setBoolean(6, booking.isConfirmed());
+            insertStatement.setTimestamp(7, Timestamp.from(booking.getBookingTime()));
 
-            int rowsInserted = bookingStatement.executeUpdate();
-            if (rowsInserted == 0) {
-                throw new SQLException("Booking failed.");
-            }
+            int rowsInserted = insertStatement.executeUpdate();
+            if (rowsInserted > 0) {
 
-            try (ResultSet resultSet = bookingStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    int bookingId = resultSet.getInt(1);
-                    connection.commit();
-                    logger.info("Booking successful with ID: " + bookingId);
-                    return bookingId;
-                } else {
-                    throw new SQLException("Booking ID not generated.");
+                selectStatement.setInt(1, booking.getUserId());
+                selectStatement.setInt(2, booking.getTheaterId());
+                selectStatement.setInt(3, booking.getMovieId());
+                selectStatement.setInt(4, booking.getShowId());
+                selectStatement.setInt(5, booking.getScreenId());
+
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int bookingId = resultSet.getInt("booking_id");
+                        connection.commit();
+                        logger.info("Booking successful with ID: " + bookingId);
+                        return bookingId;
+                    }
                 }
             }
+            connection.rollback();
+            logger.severe("Booking failed, rolling back transaction.");
+            return -1;
         } catch (SQLException e) {
             logger.severe("Database error during booking: " + e.getMessage());
-            try {
-                PostgreSQLConnection.getConnection().rollback();
-                logger.warning("Transaction rolled back.");
-            } catch (SQLException rollbackEx) {
-                logger.severe("Rollback failed: " + rollbackEx.getMessage());
-            }
-            throw new BookingException("Failed to create booking: " + e.getMessage());
+            throw new BookingException("Database error during booking." , e);
         }
     }
 
     public boolean cancelBooking(int bookingId) {
-        String deleteSeatsQuery = "DELETE FROM booking_seats WHERE booking_id = ?";
-        String deleteBookingQuery = "DELETE FROM bookings WHERE id = ?";
+        final String deleteSeatsQuery = "DELETE FROM booking_seats WHERE booking_id = ?";
+        final String deleteBookingQuery = "DELETE FROM bookings WHERE id = ?";
 
         try (Connection connection = PostgreSQLConnection.getConnection()) {
             connection.setAutoCommit(false);
 
-            // Check if the booking exists
             Booking booking = getBookingById(bookingId);
             if (booking == null) {
                 logger.warning("Cancellation failed. Booking ID " + bookingId + " not found.");
                 return false;
             }
 
-            // Check if the show has already started
-            if (showDAO.hasShowStarted(booking.getShowId())) {
-                logger.warning("Cancellation failed. Show has already started.");
-                return false;
-            }
-
-            // Delete seat mappings first
             try (PreparedStatement seatStmt = connection.prepareStatement(deleteSeatsQuery)) {
                 seatStmt.setInt(1, bookingId);
                 seatStmt.executeUpdate();
             }
 
-            // Now delete the booking itself
-            try (PreparedStatement bookingStmt = connection.prepareStatement(deleteBookingQuery)) {
-                bookingStmt.setInt(1, bookingId);
-                int rowsDeleted = bookingStmt.executeUpdate();
+            try (PreparedStatement bookingStatement = connection.prepareStatement(deleteBookingQuery)) {
+                bookingStatement.setInt(1, bookingId);
+                int rowsDeleted = bookingStatement.executeUpdate();
                 if (rowsDeleted == 0) {
                     connection.rollback();
                     logger.warning("Cancellation failed. Booking not found.");
@@ -115,7 +106,7 @@ public class BookingDAO implements BookingDAOInterface {
     }
 
     public Booking getBookingById(int bookingId) {
-        String query = "SELECT * FROM bookings WHERE id = ?";
+        final String query = "SELECT * FROM bookings WHERE id = ?";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -145,7 +136,7 @@ public class BookingDAO implements BookingDAOInterface {
     }
 
     public boolean mapSeatsToBooking(int bookingId, List<Integer> seatIds) {
-        String seatInsertQuery = "INSERT INTO booking_seats (booking_id, show_seat_id) VALUES (?, ?)";
+        final String seatInsertQuery = "INSERT INTO booking_seats (booking_id, show_seat_id) VALUES (?, ?)";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(seatInsertQuery)) {

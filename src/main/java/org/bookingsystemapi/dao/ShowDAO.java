@@ -9,7 +9,7 @@ import java.sql.*;
 public class ShowDAO {
 
     public boolean hasShowStarted(int showId) {
-        String query = "SELECT start_time FROM shows WHERE id = ?";
+        final String query = "SELECT start_time FROM shows WHERE id = ?";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

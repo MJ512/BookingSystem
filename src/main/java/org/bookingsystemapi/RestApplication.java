@@ -5,20 +5,20 @@ import io.github.classgraph.ScanResult;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import org.bookingsystemapi.dao.BookingDAO;
-import org.bookingsystemapi.dao.ShowDAO;
-import org.bookingsystemapi.dao.ValidationDAO;
+import org.bookingsystemapi.dao.*;
 import org.bookingsystemapi.service.BookingService;
+import org.bookingsystemapi.service.RegistrationService;
+import org.bookingsystemapi.service.UserDashboardService;
+import org.bookingsystemapi.service.UserLoginService;
 import org.bookingsystemapi.servlet.BookingServlet;
 import org.bookingsystemapi.servlet.RegistrationServlet;
 import org.bookingsystemapi.servlet.UserDashboardServlet;
 import org.bookingsystemapi.servlet.UserLoginServlet;
-import org.bookingsystemapi.validation.BookingValidator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import java.util.Set;
 
-@ApplicationPath("/api")  // Base path for REST API
+@ApplicationPath("/api")
 public class RestApplication extends Application {
 
     @Override
@@ -29,26 +29,29 @@ public class RestApplication extends Application {
 
     @Override
     public Set<Object> getSingletons() {
-        return Set.of(new DependencyBinder());  // ✅ Register dependency injection
+        return Set.of(new DependencyBinder());
     }
 
     private static class DependencyBinder extends AbstractBinder {
         @Override
         protected void configure() {
-            try (ScanResult scanResult = new ClassGraph()
-                    .acceptPackages("org.bookingsystemapi")
-                    .enableClassInfo()
-                    .scan()) {
+            bindAsContract(UserDashboardDAO.class);
+            bindAsContract(BookingDAO.class);
+            bindAsContract(ShowDAO.class);
+            bindAsContract(ValidationDAO.class);
+            bindAsContract(SeatDAO.class);
+            bindAsContract(UserDAO.class);
+            bindAsContract(MovieDAO.class);
 
-                scanResult.getAllClasses().forEach(classInfo -> {
-                    try {
-                        Class<?> clazz = Class.forName(classInfo.getName());
-                        bindAsContract(clazz);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
+            bindAsContract(UserDashboardService.class);
+            bindAsContract(BookingService.class);
+            bindAsContract(UserLoginService.class);
+            bindAsContract(RegistrationService.class);
+
+            bindAsContract(UserDashboardServlet.class);
+            bindAsContract(UserLoginServlet.class);
+            bindAsContract(BookingServlet.class);
+            bindAsContract(RegistrationServlet.class);
         }
     }
 }

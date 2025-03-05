@@ -5,8 +5,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.bookingsystemapi</groupId>
-    <artifactId>BookingSystemAPI</artifactId>
+    <groupId>org.bookmyshow</groupId>
+    <artifactId>BookMyShow</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0</version>  <!-- Adjust the version based on your setup -->
+            <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- JAX-RS API -->
@@ -53,13 +53,6 @@
             <version>4.0.0-M2</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.github.classgraph/classgraph -->
-        <dependency>
-            <groupId>io.github.classgraph</groupId>
-            <artifactId>classgraph</artifactId>
-            <version>4.8.179</version>
-        </dependency>
-
         <!-- JSON Support with Jackson -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
@@ -72,6 +65,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.3</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- HikariCP for Connection Pooling -->
@@ -79,13 +73,6 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.0.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.18.2</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
@@ -107,7 +94,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.5.16</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j -->
@@ -127,7 +113,6 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.2</version>
             </plugin>
-
             <!-- Cargo Plugin for Automated Tomcat Deployment -->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
@@ -149,8 +134,8 @@
                     </configuration>
                     <deployables>
                         <deployable>
-                            <groupId>org.bookingsystemapi</groupId>
-                            <artifactId>BookingSystemAPI</artifactId>
+                            <groupId>org.bookmyshow</groupId>
+                            <artifactId>BookMyShow</artifactId>
                             <type>war</type>
                         </deployable>
                     </deployables>

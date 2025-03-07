@@ -20,7 +20,9 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(int id, int userId, int theaterId, int movieId, int showId, int screenId, List<Integer> seatIds, Instant bookingTime, boolean isConfirmed) {
+    public Booking(final int id, final int userId, final int theaterId,
+                   final int movieId, final int showId, final int screenId,
+                   final List<Integer> seatIds, final Instant bookingTime, final boolean isConfirmed) {
         this.id = id;
         this.userId = userId;
         this.theaterId = theaterId;
@@ -34,75 +36,49 @@ public class Booking {
         this.isConfirmed = isConfirmed;
     }
 
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public final void setId(int id) {
         this.id = id;
     }
 
-    public int getUserId() {
+    public final int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 
-    public int getTheaterId() {
+    public final int getTheaterId() {
         return theaterId;
     }
 
-    public void setTheaterId(int theaterId) {
-        this.theaterId = theaterId;
-    }
-
-    public int getMovieId() {
+    public final int getMovieId() {
         return movieId;
     }
 
-    public void setMovieId(int movieId) {
-        this.movieId = movieId;
-    }
-
-    public int getShowId() {
+    public final int getShowId() {
         return showId;
     }
 
-    public void setShowId(int showId) {
-        this.showId = showId;
-    }
-
-    public int getScreenId() {
+    public final int getScreenId() {
         return screenId;
     }
 
-    public void setScreenId(int screenId) {
-        this.screenId = screenId;
-    }
-
-    public List<Integer> getSeatIds() {
+    public final List<Integer> getSeatIds() {
         return seatIds;
     }
 
-    public void setSeatIds(List<Integer> seatIds) {
-        this.seatIds = seatIds;
-    }
-
-    public Instant getBookingTime() {
+    public final Instant getBookingTime() {
         return bookingTime;
     }
 
-    public void setBookingTime(Instant bookingTime) {
+    public final void setBookingTime(Instant bookingTime) {
         this.bookingTime = bookingTime;
     }
 
-    public boolean isConfirmed() {
+    public final boolean isConfirmed() {
         return isConfirmed;
     }
 
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
 }

@@ -10,7 +10,7 @@ public class Theater {
     private LocalDateTime openingHour;
     private String contact;
 
-    public Theater(int id, String name, Address address, LocalDateTime openingHour, String contact) {
+    public Theater(final int id, final String name, final Address address, final LocalDateTime openingHour, final String contact) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -22,39 +22,24 @@ public class Theater {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Address getAddress() {
+    public final Address getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public LocalDateTime getOpeningHour() {
+    public final LocalDateTime getOpeningHour() {
         return openingHour;
     }
 
-    public void setOpeningHour(LocalDateTime openingHour) {
-        this.openingHour = openingHour;
-    }
-
-    public String getContact() {
+    public final String getContact() {
         return contact;
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
 }

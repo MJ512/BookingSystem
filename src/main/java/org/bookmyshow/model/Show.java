@@ -10,7 +10,7 @@ public class Show {
     private Movie movie;
     private Theater theater;
 
-    public Show(int id, LocalDateTime startTime,LocalDateTime endTime, Movie movie, Theater theater) {
+    public Show(final int id, final LocalDateTime startTime,final LocalDateTime endTime, final Movie movie, final Theater theater) {
         this.id = id;
         this.startTime = startTime;
         this.movie = movie;
@@ -21,31 +21,20 @@ public class Show {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
-    public LocalDateTime getStartTime() {
+    public final LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public Movie getMovie() {
+    public final Movie getMovie() {
         return movie;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
-
-    public Theater getTheater() {
+    public final Theater getTheater() {
         return theater;
     }
 
-    public void setTheater(Theater theater) {
-        this.theater = theater;
-    }
 }

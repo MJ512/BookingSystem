@@ -7,42 +7,19 @@ public class Address {
     private String city;
     private String state;
 
-    public Address(int id, String street, String city, String state) {
+    public Address(final int id, final String street, final String city, final String state) {
         this.id = id;
         this.street = street;
         this.city = city;
         this.state = state;
     }
 
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public final void setId(int id) {
         this.id = id;
     }
 
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
 }

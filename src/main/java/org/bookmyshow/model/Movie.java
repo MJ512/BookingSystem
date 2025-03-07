@@ -19,9 +19,9 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(LocalDate releaseDate, int duration,
-                 List<String> genre, List<String> movieCast,
-                 List<String> language, String certificate, String title, int id) {
+    public Movie(final LocalDate releaseDate, final int duration,
+                 final List<String> genre, final List<String> movieCast,
+                 final List<String> language, final String certificate, final String title, final int id) {
 
         this.releaseDate = releaseDate;
         this.duration = duration;
@@ -33,67 +33,72 @@ public class Movie {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+    public Movie(final int id, final String title) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getCertificate() {
+    public final int getId() {
+        return id;
+    }
+
+    public final void setId(final int id) {
+        this.id = id;
+    }
+
+    public final String getTitle() {
+        return title;
+    }
+
+    public final void setTitle(String title) {
+        this.title = title;
+    }
+
+    public final String getCertificate() {
         return certificate;
     }
 
-    public void setCertificate(String certificate) {
+    public final void setCertificate(final String certificate) {
         this.certificate = certificate;
     }
 
-    public List<String> getLanguage() {
+    public final List<String> getLanguage() {
         return language;
     }
 
-    public void setLanguage(List<String> language) {
+    public final void setLanguage(final List<String> language) {
         this.language = language;
     }
 
-    public List<String> getMovieCast() {
+    public final List<String> getMovieCast() {
         return movieCast;
     }
 
-    public void setMovieCast(List<String> movieCast) {
+    public void setMovieCast(final List<String> movieCast) {
         this.movieCast = movieCast;
     }
 
-    public List<String> getGenre() {
+    public final List<String> getGenre() {
         return genre;
     }
 
-    public void setGenre(List<String> genre) {
+    public final void setGenre(final List<String> genre) {
         this.genre = genre;
     }
 
-    public int getDuration() {
+    public final int getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public final void setDuration(final int duration) {
         this.duration = duration;
     }
 
-    public LocalDate getReleaseDate() {
+    public final LocalDate getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
+    public final void setReleaseDate(final LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 }

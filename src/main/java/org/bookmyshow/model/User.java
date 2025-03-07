@@ -9,7 +9,7 @@ public class User {
 
     public User(){}
 
-    public User(int userId, String name, String email, String phone, String password) {
+    public User(final int userId, final String name, final String email, final String phone, final String password) {
         this.userId = userId;
         this.name = name;
         this.email = email;
@@ -17,50 +17,33 @@ public class User {
         this.password = password;
     }
 
-    public User(int userId, String name, String email, String phone) {
+    public User(final int userId, final String name, final String email, final String phone) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.phone = phone;
     }
 
-    public int getUserId() {
+    public final int getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
+    public final String getEmail() {
         return email;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
+    public final String getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPassword() {
+    public final String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public final void setPassword(final String password) {
         this.password = password;
     }
 }

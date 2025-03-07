@@ -2,35 +2,42 @@ package org.bookmyshow.service;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.bookmyshow.dao.BookingDAO;
-import org.bookmyshow.dao.ShowDAO;
+import org.bookmyshow.repository.BookingDAOInterface;
+import org.bookmyshow.repository.ShowDAOInterface;
 import org.bookmyshow.exception.BookingException;
 import org.bookmyshow.model.Booking;
 import org.bookmyshow.validation.BookingValidator;
+
+import java.sql.SQLException;
 import java.util.logging.Logger;
 import java.time.Instant;
 
 @Singleton
 public class BookingService {
 
-    private final BookingDAO bookingDAO;
-    private final BookingValidator validator;
-    private final ShowDAO showDAO;
-
     private static final Logger logger = Logger.getLogger(BookingService.class.getName());
 
+    private final BookingDAOInterface bookingDAO;
+    private final BookingValidator validator;
+    private final ShowDAOInterface showDAO;
+
     @Inject
-    private BookingService(BookingDAO bookingDAO, ShowDAO showDAO, BookingValidator validator) {
+    private BookingService(final BookingDAOInterface bookingDAO, final ShowDAOInterface showDAO, final BookingValidator validator) {
         this.bookingDAO = bookingDAO;
         this.showDAO = showDAO;
         this.validator = validator;
     }
 
-    public final int bookSeat(Booking booking) {
+    public final int bookSeat(final Booking booking) {
 
-        if (showDAO.hasShowStarted(booking.getShowId())) {
-            logger.warning("Booking failed. Show has already started.");
-            throw new BookingException("Booking failed. Show has already started.");
+        try {
+            if (showDAO.hasShowStarted(booking.getShowId())) {
+                logger.warning("Booking failed. Show has already started.");
+                throw new BookingException("Booking failed. Show has already started.");
+            }
+        } catch (SQLException e) {
+            logger.severe("Database error while checking if show has started: " + e.getMessage());
+            throw new BookingException("Database error while checking show start time.", e);
         }
 
         if (!validator.isValidBooking(booking.getUserId(), booking.getTheaterId(), booking.getMovieId(),
@@ -59,7 +66,7 @@ public class BookingService {
     }
 
 
-    public boolean cancelBooking(int bookingId) {
+    public final boolean cancelBooking(final int bookingId) {
         Booking booking = bookingDAO.getBookingById(bookingId);
 
         if (booking == null) {
@@ -67,11 +74,15 @@ public class BookingService {
             return false;
         }
 
-        if (showDAO.hasShowStarted(booking.getShowId())) {
-            logger.warning("Cannot cancel. Show with ID " + booking.getShowId() + " has already started.");
+        try {
+            if (showDAO.hasShowStarted(booking.getShowId())) {
+                logger.warning("Cannot cancel. Show with ID " + booking.getShowId() + " has already started.");
+                return false;
+            }
+        } catch (SQLException e) {
+            logger.severe("Database error while checking if show has started: " + e.getMessage());
             return false;
         }
-
         return bookingDAO.cancelBooking(bookingId);
     }
 }

@@ -8,42 +8,31 @@ public class Screen {
     private int totalSeat;
     private Theater theater;
 
-    public Screen(int id, String name, int totalSeat, Theater theater) {
+    public Screen(final int id, final String name, final int totalSeat, final Theater theater) {
         this.id = id;
         this.name = name;
         this.totalSeat = totalSeat;
         this.theater = theater;
     }
 
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public final void setId(int id) {
         this.id = id;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getTotalSeat() {
+    public final int getTotalSeat() {
         return totalSeat;
     }
 
-    public void setTotalSeat(int totalSeat) {
-        this.totalSeat = totalSeat;
-    }
-
-    public Theater getTheater() {
+    public final Theater getTheater() {
         return theater;
     }
 
-    public void setTheater(Theater theater) {
-        this.theater = theater;
-    }
 }

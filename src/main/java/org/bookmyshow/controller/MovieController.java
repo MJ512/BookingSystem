@@ -8,6 +8,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
@@ -29,11 +30,22 @@ public class MovieController {
 
     @GET
     @Path("/top-watched")
-    public final Response getHighestWatchedMovie() {
-        Movie movie = movieService.getHighestWatchedMovie();
-        if (movie != null) {
-            return Response.ok(movie).build();
+    public final Response getHighestWatchedMovies() {
+        List<Movie> movies = movieService.getHighestWatchedMovie();
+        if (!movies.isEmpty()) {
+            return Response.ok(movies).build();
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("No movie found").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("No movies found").build();
     }
+
+    @GET
+    @Path("/by-address/{addressId}")
+    public final Response getMoviesByAddress(@PathParam("addressId") final int addressId) {
+        List<Movie> movies = movieService.fetchMoviesByAddress(addressId);
+        if (!movies.isEmpty()) {
+            return Response.ok(movies).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("No movies found for the given address").build();
+    }
+
 }

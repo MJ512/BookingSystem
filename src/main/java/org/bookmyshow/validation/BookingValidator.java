@@ -1,16 +1,16 @@
 package org.bookmyshow.validation;
 
 import jakarta.inject.Inject;
-import org.bookmyshow.repository.impl.ValidationDAO;
+import org.bookmyshow.repository.ValidationDAOInterface;
 
 import java.util.List;
 
 public class BookingValidator {
 
-    private final ValidationDAO validationDAO;
+    private final ValidationDAOInterface validationDAO;
 
     @Inject
-    private BookingValidator(final ValidationDAO validationDAO){
+    private BookingValidator(final ValidationDAOInterface validationDAO){
         this.validationDAO = validationDAO;
     }
 

@@ -19,23 +19,18 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(final LocalDate releaseDate, final int duration,
-                 final List<String> genre, final List<String> movieCast,
-                 final List<String> language, final String certificate, final String title, final int id) {
+    public Movie(final int id, final String title, final String certificate,
+                 final List<String> language, final List<String> genre, final List<String> movieCast,
+                 final int duration, final LocalDate releaseDate) {
 
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.language = new ArrayList<>();
-        this.movieCast = new ArrayList<>();
-        this.genre = new ArrayList<>();
+        this.id = id;
+        this.title = title;
         this.certificate = certificate;
-        this.title = title;
-        this.id = id;
-    }
-
-    public Movie(final int id, final String title) {
-        this.id = id;
-        this.title = title;
+        this.genre = genre != null ? List.copyOf(genre) : List.of();
+        this.movieCast = movieCast != null ? List.copyOf(movieCast) : List.of();
+        this.language = language != null ? List.copyOf(language) : List.of();
+        this.duration = duration;
+        this.releaseDate = releaseDate;
     }
 
     public final int getId() {

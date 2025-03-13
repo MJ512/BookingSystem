@@ -8,5 +8,7 @@ public interface MovieDAOInterface {
 
     List<Movie> getPlayingMovies();
 
-    Movie getHighestWatchedMovie();
+    List<Movie> getHighestWatchedMovies();
+
+    List<Movie> fetchMoviesByAddress(int addressId);
 }

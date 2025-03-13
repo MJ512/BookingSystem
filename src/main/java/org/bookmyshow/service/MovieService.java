@@ -19,7 +19,11 @@ public class MovieService {
         return movieDAO.getPlayingMovies();
     }
 
-    public Movie getHighestWatchedMovie() {
-        return movieDAO.getHighestWatchedMovie();
+    public List<Movie> getHighestWatchedMovie() {
+        return movieDAO.getHighestWatchedMovies();
+    }
+
+    public List<Movie> fetchMoviesByAddress(final int addressId){
+        return movieDAO.fetchMoviesByAddress(addressId);
     }
 }

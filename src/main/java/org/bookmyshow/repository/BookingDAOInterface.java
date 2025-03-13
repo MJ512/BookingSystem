@@ -12,5 +12,5 @@ public interface BookingDAOInterface {
 
     boolean mapSeatsToBooking(final int bookingId, final List<Integer> seatIds);
 
-    Booking getBookingById(final int bookingId);
+    Integer getShowIdByBookingId(final int bookingId);
 }

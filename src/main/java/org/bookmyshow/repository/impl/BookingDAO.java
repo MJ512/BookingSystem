@@ -1,6 +1,5 @@
 package org.bookmyshow.repository.impl;
 
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.bookmyshow.database.PostgreSQLConnection;
 import org.bookmyshow.exception.BookingException;
@@ -8,8 +7,11 @@ import org.bookmyshow.model.Booking;
 import org.bookmyshow.repository.AbstractValidationDAO;
 import org.bookmyshow.repository.BookingDAOInterface;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Logger;
 
 @Singleton
@@ -78,53 +80,5 @@ public class BookingDAO extends AbstractValidationDAO implements BookingDAOInter
             logger.severe("Error canceling booking: " + e.getMessage());
         }
         return false;
-    }
-
-    public final Integer getShowIdByBookingId(final int bookingId) {
-        final String query = "SELECT show_id FROM booking WHERE id = ?";
-
-        try (Connection connection = PostgreSQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            preparedStatement.setInt(1, bookingId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                return resultSet.getInt("show_id");
-            }
-        } catch (SQLException e) {
-            logger.severe("Database error in getShowIdByBookingId: " + e.getMessage());
-        }
-        return null;
-    }
-
-
-    public final boolean mapSeatsToBooking(final int bookingId, final List<Integer> seatIds) {
-        final String insertQuery = "INSERT INTO booked_seats (booking_id, seat_id, movie_show_id) VALUES (?, ?, ?)";
-
-        try (Connection connection = PostgreSQLConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
-
-            connection.setAutoCommit(false);
-
-            for (int seatId : seatIds) {
-                statement.setInt(1, bookingId);
-                statement.setInt(2, seatId);
-                statement.addBatch();
-            }
-
-            int[] updatedRows = statement.executeBatch();
-
-            if (updatedRows.length != seatIds.size()) {
-                connection.rollback();
-                throw new BookingException("Failed to insert all seats for booking ID: " + bookingId);
-            }
-
-            connection.commit();
-            return true;
-        } catch (SQLException e) {
-            logger.severe("Failed to map seats to booking: " + e.getMessage());
-            throw new BookingException("Database error while mapping seats.", e);
-        }
     }
 }

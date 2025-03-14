@@ -3,6 +3,7 @@ package org.bookmyshow.service.booking;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.bookmyshow.repository.BookingDAOInterface;
+import org.bookmyshow.repository.SeatDAOInterface;
 import org.bookmyshow.repository.ShowDAOInterface;
 import org.bookmyshow.exception.BookingException;
 import org.bookmyshow.model.Booking;
@@ -21,12 +22,15 @@ public class BookingService {
     private final BookingDAOInterface bookingDAO;
     private final ShowDAOInterface showDAO;
     private final BookingValidator validator;
+    private final SeatDAOInterface seatDAO;
 
     @Inject
-    public BookingService(final BookingDAOInterface bookingDAO, final ShowDAOInterface showDAO, final BookingValidator validator) {
+    public BookingService(final BookingDAOInterface bookingDAO, final ShowDAOInterface showDAO,
+                          final BookingValidator validator, final SeatDAOInterface seatDAO) {
         this.bookingDAO = bookingDAO;
         this.showDAO = showDAO;
         this.validator = validator;
+        this.seatDAO = seatDAO;
     }
 
     public int bookSeat(final Booking booking) {
@@ -56,7 +60,7 @@ public class BookingService {
             throw new BookingException("Failed to store booking.");
         }
 
-        if (!bookingDAO.mapSeatsToBooking(bookingId, booking.getSeatIds())) {
+        if (!seatDAO.mapSeatsToBooking(bookingId, booking.getSeatIds())) {
             logger.severe("Failed to map seats for booking ID: " + bookingId);
             throw new BookingException("Failed to map seats.");
         }
@@ -69,7 +73,7 @@ public class BookingService {
         logger.info("Cancellation request received for Booking ID: " + bookingId);
 
         try {
-            int showId = bookingDAO.getShowIdByBookingId(bookingId);
+            int showId = showDAO.getShowIdByBookingId(bookingId);
 
             if (showDAO.hasShowStarted(showId)) {
                 logger.warning("Cannot cancel. Show with ID " + showId + " has already started.");

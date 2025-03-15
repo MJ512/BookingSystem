@@ -21,7 +21,7 @@ public class BookingDAO extends AbstractValidationDAO implements BookingDAOInter
 
     @Override
     public final int createBooking(final Booking booking) {
-        final String insertQuery = "INSERT INTO booking (user_id, theater_id, movie_id, movie_show_id, screen_id, is_confirmed, booking_time) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
+        final String insertQuery = "INSERT INTO booking (user_id, movie_show_id, is_confirmed, booking_time) VALUES (?, ?, ?, ?) RETURNING id";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
@@ -29,12 +29,9 @@ public class BookingDAO extends AbstractValidationDAO implements BookingDAOInter
             connection.setAutoCommit(false);
 
             insertStatement.setInt(1, booking.getUserId());
-            insertStatement.setInt(2, booking.getTheaterId());
-            insertStatement.setInt(3, booking.getMovieId());
-            insertStatement.setInt(4, booking.getShowId());
-            insertStatement.setInt(5, booking.getScreenId());
-            insertStatement.setBoolean(6, booking.isConfirmed());
-            insertStatement.setTimestamp(7, Timestamp.from(booking.getBookingTime()));
+            insertStatement.setInt(2, booking.getMovieShowId());
+            insertStatement.setBoolean(3, booking.isConfirmed());
+            insertStatement.setTimestamp(4, Timestamp.from(booking.getBookingTime()));
 
             try (ResultSet resultSet = insertStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -51,12 +48,11 @@ public class BookingDAO extends AbstractValidationDAO implements BookingDAOInter
             logger.severe("Database error during booking: " + e.getMessage());
             throw new BookingException("Database error during booking.", e);
         }
-
     }
 
     @Override
-    public boolean cancelBooking(int bookingId) {
-        String query = "DELETE FROM booking WHERE id = ?";
+    public final boolean cancelBooking(final int userId, final int bookingId) {
+        String query = "DELETE FROM booking WHERE id = ? AND user_id = ?";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -64,16 +60,17 @@ public class BookingDAO extends AbstractValidationDAO implements BookingDAOInter
             connection.setAutoCommit(false);
 
             statement.setInt(1, bookingId);
+            statement.setInt(2, userId);
             int rowsAffected = statement.executeUpdate();
 
             if (rowsAffected == 0) {
                 connection.rollback();
-                logger.warning("Cancellation failed. Booking not found.");
+                logger.warning("Cancellation failed. Either booking not found or user not authorized.");
                 return false;
             }
 
             connection.commit();
-            logger.info("Booking ID " + bookingId + " successfully canceled.");
+            logger.info("Booking ID " + bookingId + " successfully canceled by User ID " + userId);
             return true;
 
         } catch (SQLException e) {

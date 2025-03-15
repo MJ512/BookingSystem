@@ -33,11 +33,11 @@ public class BookingService {
         this.seatDAO = seatDAO;
     }
 
-    public int bookSeat(final Booking booking) {
-        logger.info("Booking request received for Show ID: " + booking.getShowId());
+    public final int bookSeat(final Booking booking) {
+        logger.info("Booking request received for Show ID: " + booking.getMovieShowId());
 
         try {
-            if (showDAO.hasShowStarted(booking.getShowId())) {
+            if (showDAO.hasShowStarted(booking.getMovieShowId())) {
                 logger.warning("Booking failed. Show has already started.");
                 throw new BookingException("Booking failed. Show has already started.");
             }
@@ -46,15 +46,14 @@ public class BookingService {
             throw new BookingException("Database error while checking show start time.", e);
         }
 
-        if (!validator.isValidBooking(booking.getUserId(), booking.getTheaterId(), booking.getMovieId(),
-                booking.getShowId(), booking.getScreenId(), booking.getSeatIds())) {
+        if (!validator.isValidBooking(booking.getUserId(), booking.getMovieShowId(), booking.getSeatIds())) {
             logger.warning("Booking validation failed.");
             throw new BookingException("Booking validation failed.");
         }
 
         booking.setBookingTime(Instant.now());
-        int bookingId = bookingDAO.createBooking(booking);
 
+        int bookingId = bookingDAO.createBooking(booking);
         if (bookingId == INVALID_BOOKING_ID) {
             logger.severe("Booking failed to store in database.");
             throw new BookingException("Failed to store booking.");
@@ -69,8 +68,8 @@ public class BookingService {
         return bookingId;
     }
 
-    public boolean cancelBooking(final int bookingId) {
-        logger.info("Cancellation request received for Booking ID: " + bookingId);
+    public final boolean cancelBooking(final int userId, final int bookingId) {
+        logger.info("Cancellation request received for Booking ID: " + bookingId + " by User ID: " + userId);
 
         try {
             int showId = showDAO.getShowIdByBookingId(bookingId);
@@ -84,11 +83,11 @@ public class BookingService {
             throw new BookingException("Database error while checking show start time.", e);
         }
 
-        boolean isCancelled = bookingDAO.cancelBooking(bookingId);
+        boolean isCancelled = bookingDAO.cancelBooking(userId, bookingId);
         if (isCancelled) {
-            logger.info("Booking ID " + bookingId + " canceled successfully.");
+            logger.info("Booking ID " + bookingId + " canceled successfully by User ID " + userId);
         } else {
-            logger.warning("Failed to cancel Booking ID: " + bookingId);
+            logger.warning("Failed to cancel Booking ID: " + bookingId + " for User ID: " + userId);
         }
         return isCancelled;
     }

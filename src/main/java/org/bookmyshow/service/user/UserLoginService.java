@@ -23,9 +23,9 @@ public class UserLoginService {
         User user = userDAO.getUserByEmailOrPhone(loginInput);
 
         if (user == null || !HashPassword.verifyPassword(password, user.getPassword())) {
-            throw new SQLException("Invalid credentials");
+            return null;
         }
 
-        return new User(user.getUserId(), user.getName(), user.getEmail(), user.getPhone());
+        return user;
     }
 }

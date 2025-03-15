@@ -3,16 +3,17 @@ package org.bookmyshow.model;
 
 public class Screen {
 
-    private int id;
-    private String name;
-    private int totalSeat;
-    private Theater theater;
+    private final String name;
+    private final int totalSeat;
+    private final int theaterId;
 
-    public Screen(final int id, final String name, final int totalSeat, final Theater theater) {
+    private int id;
+
+    public Screen(final int id, final String name, final int totalSeat, final int theaterId) {
         this.id = id;
         this.name = name;
         this.totalSeat = totalSeat;
-        this.theater = theater;
+        this.theaterId = theaterId;
     }
 
     public final int getId() {
@@ -31,8 +32,8 @@ public class Screen {
         return totalSeat;
     }
 
-    public final Theater getTheater() {
-        return theater;
+    public final int getTheater() {
+        return theaterId;
     }
 
 }

@@ -19,18 +19,6 @@ public class ValidationDAO extends AbstractValidationDAO implements ValidationDA
         return existsInDatabase("users", "id", userId);
     }
 
-    public final boolean isValidTheater(final int theaterId) {
-        return existsInDatabase("theater", "id", theaterId);
-    }
-
-    public final boolean isValidMovie(final int movieId) {
-        return existsInDatabase("movie", "id", movieId);
-    }
-
-    public final boolean isValidShow(final int showId) {
-        return existsInDatabase("movie_show", "id", showId);
-    }
-
     public final boolean isEmailExists(final String email) {
         return existsInDatabase("users", "email", email);
     }
@@ -39,24 +27,8 @@ public class ValidationDAO extends AbstractValidationDAO implements ValidationDA
         return existsInDatabase("users", "phone", phone);
     }
 
-    public final boolean isValidScreen(final int screenId, int theaterId) {
-        final String query = "SELECT COUNT(*) FROM screen WHERE id = ? AND theater_id = ?";
-        return existsInDatabaseWithTwoConditions(query, screenId, theaterId);
-    }
-
-    private boolean existsInDatabaseWithTwoConditions(final String query, final int value1, final int value2) {
-        try (Connection connection = PostgreSQLConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            preparedStatement.setInt(1, value1);
-            preparedStatement.setInt(2, value2);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next() && resultSet.getInt(1) > 0;
-
-        } catch (SQLException e) {
-            logger.severe("Database error in existsInDatabaseWithTwoConditions: " + e.getMessage());
-            return false;
-        }
+    public final boolean isValidMovieShow(final int movieShowId) {
+        return existsInDatabase("movie_show", "id", movieShowId);
     }
 
     public final boolean areSeatsAvailable(final List<Integer> seatIds, final int showId) {

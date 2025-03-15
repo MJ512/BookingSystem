@@ -23,11 +23,11 @@ public class UserDashboardDAO implements UserDashboardDAOInterface {
     public final List<Booking> getUserBookingHistory(final int userId) {
         final List<Booking> bookingHistory = new ArrayList<>();
         final String query = """
-                SELECT b.*, bs.show_seat_id
-                FROM booking b
-                LEFT JOIN booked_seats bs ON b.id = bs.booking_id
-                WHERE b.user_id = ?
-                """;
+            SELECT b.id, b.user_id, b.movie_show_id, b.booking_time, b.is_confirmed, bs.seat_id
+            FROM booking b
+            LEFT JOIN booked_seats bs ON b.id = bs.booking_id
+            WHERE b.user_id = ?
+            """;
 
         try (Connection connection = PostgreSQLConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -39,25 +39,24 @@ public class UserDashboardDAO implements UserDashboardDAOInterface {
 
             while (resultSet.next()) {
                 int bookingId = resultSet.getInt("id");
-                Booking booking = bookingMap.getOrDefault(bookingId, new Booking(
-                        bookingId,
-                        resultSet.getInt("user_id"),
-                        resultSet.getInt("theater_id"),
-                        resultSet.getInt("movie_id"),
-                        resultSet.getInt("show_id"),
-                        resultSet.getInt("screen_id"),
-                        new ArrayList<>(),
-                        resultSet.getTimestamp("booking_time").toInstant(),
-                        resultSet.getBoolean("is_confirmed")
-                ));
 
-                int seatId = resultSet.getInt("show_seat_id");
-                if (seatId > 0) {
-                    booking.getSeatIds().add(seatId);
+                Booking booking = bookingMap.get(bookingId);
+                if (booking == null) {
+                    booking = new Booking(
+                            resultSet.getInt("user_id"),
+                            resultSet.getInt("movie_show_id"),
+                            new ArrayList<>(),  // Seat IDs will be added later
+                            resultSet.getBoolean("is_confirmed")
+                    );
+                    bookingMap.put(bookingId, booking);
                 }
 
-                bookingMap.put(bookingId, booking);
+                int seatId = resultSet.getInt("seat_id");
+                if (!resultSet.wasNull()) {
+                    booking.getSeatIds().add(seatId);
+                }
             }
+
             bookingHistory.addAll(bookingMap.values());
         } catch (SQLException e) {
             logger.severe("Database error in getUserBookingHistory: " + e.getMessage());

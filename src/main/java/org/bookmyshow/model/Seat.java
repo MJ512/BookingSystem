@@ -3,11 +3,12 @@ package org.bookmyshow.model;
 
 public class Seat {
 
+    private final char row;
+    private final int number;
+    private final Screen screen;
+    private final boolean isBooked;
+
     private int id;
-    private char row;
-    private int number;
-    private Screen screen;
-    private boolean isBooked;
 
     public Seat(final int id, final char row, final int number, final Screen screen, final boolean isBooked) {
         this.id = id;

@@ -1,13 +1,13 @@
 package org.bookmyshow.model;
 
 public class User {
-    private int userId;
-    private String name;
-    private String email;
-    private String phone;
+    private final int userId;
+    private final String name;
+    private final String email;
+    private final String phone;
+
     private String password;
 
-    public User(){}
 
     public User(final int userId, final String name, final String email, final String phone, final String password) {
         this.userId = userId;

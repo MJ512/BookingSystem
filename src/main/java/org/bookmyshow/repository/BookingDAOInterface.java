@@ -8,5 +8,5 @@ public interface BookingDAOInterface {
 
     int createBooking(final Booking booking);
 
-    boolean cancelBooking(final int bookingId);
+    boolean cancelBooking(final int userId, final int bookingId);
 }

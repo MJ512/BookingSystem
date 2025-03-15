@@ -7,78 +7,73 @@ import java.util.List;
 
 public class Booking {
 
+    private final boolean isConfirmed;
+    private final List<Integer> seatIds;
+
     private int id;
     private int userId;
-    private int theaterId;
-    private int movieId;
-    private int showId;
-    private int screenId;
-    private List<Integer> seatIds;
+    private int movieShowId;
     private Instant bookingTime;
-    private boolean isConfirmed;
 
-    public Booking() {
-    }
 
-    public Booking(final int id, final int userId, final int theaterId,
-                   final int movieId, final int showId, final int screenId,
-                   final List<Integer> seatIds, final Instant bookingTime, final boolean isConfirmed) {
-        this.id = id;
+    public Booking(int userId, int movieShowId, List<Integer> seatIds, boolean isConfirmed) {
         this.userId = userId;
-        this.theaterId = theaterId;
-        this.movieId = movieId;
-        this.showId = showId;
-        this.screenId = screenId;
+        this.movieShowId = movieShowId;
+        this.bookingTime = Instant.now();
+        this.isConfirmed = isConfirmed;
         this.seatIds = (seatIds != null) ? Collections.unmodifiableList(new ArrayList<>(seatIds))
                 : Collections.emptyList();
-
-        this.bookingTime = (bookingTime != null) ? bookingTime : Instant.now();
-        this.isConfirmed = isConfirmed;
     }
 
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
-    public final void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public final int getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-
-    public final int getTheaterId() {
-        return theaterId;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public final int getMovieId() {
-        return movieId;
+    public int getMovieShowId() {
+        return movieShowId;
     }
 
-    public final int getShowId() {
-        return showId;
+    public void setMovieShowId(int movieShowId) {
+        this.movieShowId = movieShowId;
     }
 
-    public final int getScreenId() {
-        return screenId;
-    }
-
-    public final List<Integer> getSeatIds() {
-        return seatIds;
-    }
-
-    public final Instant getBookingTime() {
+    public Instant getBookingTime() {
         return bookingTime;
     }
 
-    public final void setBookingTime(Instant bookingTime) {
+    public void setBookingTime(Instant bookingTime) {
         this.bookingTime = bookingTime;
     }
 
-    public final boolean isConfirmed() {
+    public boolean isConfirmed() {
         return isConfirmed;
     }
 
+    public List<Integer> getSeatIds() {
+        return seatIds;
+    }
+
+    @Override
+    public String toString() {
+        return "Booking{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", movieShowId=" + movieShowId +
+                ", bookingTime=" + bookingTime +
+                ", isConfirmed=" + isConfirmed +
+                ", seatIds=" + seatIds +
+                '}';
+    }
 }

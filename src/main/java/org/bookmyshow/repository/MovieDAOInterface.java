@@ -1,7 +1,8 @@
 package org.bookmyshow.repository;
 
 import org.bookmyshow.model.Movie;
-import java.sql.SQLException;
+import org.bookmyshow.model.MovieShow;
+
 import java.util.List;
 
 public interface MovieDAOInterface {
@@ -10,5 +11,7 @@ public interface MovieDAOInterface {
 
     List<Movie> getHighestWatchedMovies();
 
-    List<Movie> fetchMoviesByAddress(int addressId);
+    List<Movie> fetchMoviesByAddress(final int addressId);
+
+    List<MovieShow> getAvailableMovieShows(final Integer theaterId, final Integer movieId);
 }

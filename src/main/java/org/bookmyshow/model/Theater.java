@@ -4,16 +4,17 @@ import java.time.LocalDateTime;
 
 public class Theater {
 
-    private int id;
-    private String name;
-    private Address address;
-    private LocalDateTime openingHour;
-    private String contact;
+    private final String name;
+    private final int addressId;
+    private final LocalDateTime openingHour;
+    private final String contact;
 
-    public Theater(final int id, final String name, final Address address, final LocalDateTime openingHour, final String contact) {
+    private int id;
+
+    public Theater(final int id, final String name, final int addressId, final LocalDateTime openingHour, final String contact) {
         this.id = id;
         this.name = name;
-        this.address = address;
+        this.addressId = addressId;
         this.openingHour = openingHour;
         this.contact = contact;
     }
@@ -30,8 +31,8 @@ public class Theater {
         return name;
     }
 
-    public final Address getAddress() {
-        return address;
+    public final int getAddress() {
+        return addressId;
     }
 
     public final LocalDateTime getOpeningHour() {

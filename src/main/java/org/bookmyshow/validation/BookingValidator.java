@@ -14,13 +14,9 @@ public class BookingValidator {
         this.validationDAO = validationDAO;
     }
 
-    public final boolean isValidBooking(final int userId, final int theaterId, final int movieId,
-                                        final int showId, final int screenId, final List<Integer> seatIds){
+    public final boolean isValidBooking(final int userId, final int movieShowId, final List<Integer> seatIds){
         return validationDAO.isValidUser(userId) &&
-                validationDAO.isValidTheater(theaterId) &&
-                validationDAO.isValidMovie(movieId) &&
-                validationDAO.isValidShow(showId) &&
-               validationDAO.isValidScreen(screenId, theaterId) &&
-               validationDAO.areSeatsAvailable(seatIds, showId);
+                validationDAO.isValidMovieShow(movieShowId) &&
+                validationDAO.areSeatsAvailable(seatIds, movieShowId);
     }
 }

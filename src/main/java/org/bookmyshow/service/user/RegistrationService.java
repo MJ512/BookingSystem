@@ -6,7 +6,7 @@ import org.bookmyshow.repository.UserDAOInterface;
 import org.bookmyshow.repository.ValidationDAOInterface;
 import org.bookmyshow.model.User;
 import org.bookmyshow.util.HashPassword;
-import org.bookmyshow.validation.Validation;
+import org.bookmyshow.validation.PatternValidation;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -30,15 +30,15 @@ public class RegistrationService {
             throw new SQLException("Email or Phone Number already exists.");
         }
 
-        if (!Validation.isValidEmail(user.getEmail())) {
+        if (!PatternValidation.isValidEmail(user.getEmail())) {
             throw new IllegalArgumentException("Enter a valid Email");
         }
 
-        if (!Validation.isValidNumber(user.getPhone())) {
+        if (!PatternValidation.isValidNumber(user.getPhone())) {
             throw new IllegalArgumentException("Invalid phone number. It must be exactly 10 digits.");
         }
 
-        if (!Validation.isValidPassword(user.getPassword())) {
+        if (!PatternValidation.isValidPassword(user.getPassword())) {
             throw new IllegalArgumentException("Invalid password. It must be at least 8 characters long, " +
                     "contain at least one uppercase letter, one lowercase letter, one number, and one special character.");
         }

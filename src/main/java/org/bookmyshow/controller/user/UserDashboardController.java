@@ -22,6 +22,7 @@ import java.util.List;
 
 @Path("/users")
 public class UserDashboardController {
+
     private final UserDashboardService userService;
 
     @Inject
@@ -30,9 +31,9 @@ public class UserDashboardController {
     }
 
     @GET
-    @Path("/history/{userId}")
+    @Path("/history/{user_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response getBookingHistory(@PathParam("userId") final int userId) {
+    public final Response getBookingHistory(@PathParam("user_id") final int userId) {
         try {
             if (userId <= 0) {
                 return Response.status(Response.Status.BAD_REQUEST)
@@ -60,7 +61,7 @@ public class UserDashboardController {
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response updateUser(@QueryParam("userId") final int userId, @QueryParam("password") final String password, final User user) {
+    public final Response updateUser(@QueryParam("user_id") final int userId, @QueryParam("password") final String password, final User user) {
         try {
             if (userId <= 0 || password == null || password.isEmpty()) { // Invalid input
                 return Response.status(Response.Status.BAD_REQUEST)
@@ -87,7 +88,7 @@ public class UserDashboardController {
     @Path("/change-password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response changePassword(@QueryParam("userId") final int userId,
+    public final Response changePassword(@QueryParam("user_id") final int userId,
                                    @QueryParam("oldPassword") final String oldPass,
                                    @QueryParam("newPassword") final String newPass) {
         try {

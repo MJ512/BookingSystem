@@ -30,12 +30,11 @@ public class BookingController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response bookTickets(final Booking booking) {
+    public Response bookTickets(final Booking booking) {
         try {
-            // Basic validation
-            if (booking.getUserId() <= 0 || booking.getTheaterId() <= 0 || booking.getMovieId() <= 0 ||
-                    booking.getShowId() <= 0 || booking.getScreenId() <= 0 || booking.getSeatIds() == null ||
-                    booking.getSeatIds().isEmpty()) {
+
+            if (booking.getUserId() <= 0 || booking.getMovieShowId() <= 0 ||
+                    booking.getSeatIds() == null || booking.getSeatIds().isEmpty()) {
                 return Response.status(Response.Status.BAD_REQUEST)
                         .entity("{\"error\": \"Invalid booking data\"}").build();
             }
@@ -60,11 +59,12 @@ public class BookingController {
     }
 
     @DELETE
-    @Path("/cancel/{id}")
+    @Path("/cancel/{user_id}/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response cancelBooking(@PathParam("id") final int bookingId) {
+    public Response cancelBooking(@PathParam("user_id") final int userId,
+                                  @PathParam("id") final int bookingId) {
         try {
-            boolean success = bookingService.cancelBooking(bookingId);
+            boolean success = bookingService.cancelBooking(userId, bookingId);
 
             if (success) {
                 return Response.ok("{\"message\": \"Booking canceled successfully\"}").build();
@@ -80,5 +80,4 @@ public class BookingController {
                     .build();
         }
     }
-
 }

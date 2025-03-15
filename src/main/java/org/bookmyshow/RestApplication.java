@@ -39,7 +39,7 @@ public class RestApplication extends Application {
             bind(UserDAO.class).to(UserDAOInterface.class);
             bind(UserDashboardDAO.class).to(UserDashboardDAOInterface.class);
             bind(BookingDAO.class).to(BookingDAOInterface.class);
-            bind(ShowDAO.class).to(ShowDAOInterface.class);
+            bind(MovieShowDAO.class).to(ShowDAOInterface.class);
             bind(ValidationDAO.class).to(ValidationDAOInterface.class);
             bind(MovieDAO.class).to(MovieDAOInterface.class);
 

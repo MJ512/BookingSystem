@@ -2,11 +2,12 @@ package org.bookmyshow.model;
 
 public class Address {
 
+    private final String street;
+    private final String city;
+    private final String state;
+    private final int zipCode;
+
     private int id;
-    private String street;
-    private String city;
-    private String state;
-    private int zipCode;
 
     public Address(final int id, final String street, final String city, final String state, final int zipCode) {
         this.id = id;
@@ -24,4 +25,19 @@ public class Address {
         this.id = id;
     }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public int getZipCode() {
+        return zipCode;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getState() {
+        return state;
+    }
 }

@@ -2,30 +2,30 @@ package org.bookmyshow.service;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import org.bookmyshow.dao.UserDAO;
+import org.bookmyshow.repository.UserRepository;
 import org.bookmyshow.model.User;
-import org.bookmyshow.validation.HashPassword;
+import org.bookmyshow.util.HashPassword;
 
 import java.sql.SQLException;
 
 @Singleton
 public class UserLoginService {
 
-    private final UserDAO userDAO;
+    private final UserRepository userDAO;
 
     @Inject
-    private UserLoginService(UserDAO userDAO) {
+    private UserLoginService(final UserRepository userDAO) {
         this.userDAO = userDAO;
     }
 
-    public User authenticateUser(String loginInput, String password) throws SQLException {
+    public final User authenticateUser(final String loginInput, final String password) throws SQLException {
 
         User user = userDAO.getUserByEmailOrPhone(loginInput);
 
         if (user == null || !HashPassword.verifyPassword(password, user.getPassword())) {
-            throw new SQLException("Invalid credentials");
+            return null;
         }
 
-        return new User(user.getUserId(), user.getName(), user.getEmail(), user.getPhone());
+        return user;
     }
 }

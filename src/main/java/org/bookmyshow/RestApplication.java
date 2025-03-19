@@ -5,15 +5,15 @@ import jakarta.ws.rs.core.Application;
 import org.bookmyshow.controller.MovieController;
 import org.bookmyshow.repository.*;
 import org.bookmyshow.repository.impl.*;
-import org.bookmyshow.service.booking.BookingService;
+import org.bookmyshow.service.BookingService;
 import org.bookmyshow.service.MovieService;
-import org.bookmyshow.service.user.RegistrationService;
-import org.bookmyshow.service.user.UserDashboardService;
-import org.bookmyshow.service.user.UserLoginService;
-import org.bookmyshow.controller.booking.BookingController;
-import org.bookmyshow.controller.user.RegistrationController;
-import org.bookmyshow.controller.user.UserDashboardController;
-import org.bookmyshow.controller.user.UserLoginController;
+import org.bookmyshow.service.RegistrationService;
+import org.bookmyshow.service.UserDashboardService;
+import org.bookmyshow.service.UserLoginService;
+import org.bookmyshow.controller.BookingController;
+import org.bookmyshow.controller.RegistrationController;
+import org.bookmyshow.controller.UserDashboardController;
+import org.bookmyshow.controller.UserLoginController;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import java.util.Set;
@@ -36,12 +36,12 @@ public class RestApplication extends Application {
         @Override
         protected void configure() {
 
-            bind(UserDAO.class).to(UserDAOInterface.class);
-            bind(UserDashboardDAO.class).to(UserDashboardDAOInterface.class);
-            bind(BookingDAO.class).to(BookingDAOInterface.class);
-            bind(MovieShowDAO.class).to(ShowDAOInterface.class);
-            bind(ValidationDAO.class).to(ValidationDAOInterface.class);
-            bind(MovieDAO.class).to(MovieDAOInterface.class);
+            bind(UserRepositoryImpl.class).to(UserRepository.class);
+            bind(UserDashboardDAO.class).to(UserDashboardRepository.class);
+            bind(BookingRepositoryImpl.class).to(BookingRepository.class);
+            bind(MovieShowRepositoryImpl.class).to(ShowRepository.class);
+            bind(ValidationRepositoryImpl.class).to(ValidationRepository.class);
+            bind(MovieRepositoryImpl.class).to(MovieRepository.class);
 
             // Bind services
             bindAsContract(UserLoginService.class);

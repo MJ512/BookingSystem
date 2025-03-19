@@ -1,27 +1,28 @@
 package org.bookmyshow.service;
 
 import jakarta.inject.Inject;
-import org.bookmyshow.dao.UserDashboardDAO;
+import org.bookmyshow.repository.UserDashboardRepository;
 import org.bookmyshow.model.Booking;
 import org.bookmyshow.model.User;
-import org.bookmyshow.validation.HashPassword;
+import org.bookmyshow.util.HashPassword;
 
 import java.util.List;
 
 public class UserDashboardService {
-    private final UserDashboardDAO userDashboardDAO;
+
+    private final UserDashboardRepository userDashboardDAO;
 
     @Inject
-    public UserDashboardService(UserDashboardDAO userDashboardDAO){
+    public UserDashboardService(final UserDashboardRepository userDashboardDAO){
         this.userDashboardDAO = userDashboardDAO;
     }
 
-    public List<Booking> getBookingHistory(int userId) {
+    public final List<Booking> getBookingHistory(final int userId) {
 
         return userDashboardDAO.getUserBookingHistory(userId);
     }
 
-    public boolean updateUserInfo(int userId, String password, User user) {
+    public final boolean updateUserInfo(final int userId, final String password, final User user) {
         User existingUser = userDashboardDAO.getUserById(userId);
 
         if (existingUser == null) {
@@ -34,7 +35,7 @@ public class UserDashboardService {
         return false;
     }
 
-    public boolean changePassword(int userId, String oldPassword, String newPassword) {
+    public final boolean changePassword(final int userId, final String oldPassword, final String newPassword) {
         User user = userDashboardDAO.getUserById(userId);
 
         if (user == null) {

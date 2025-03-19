@@ -3,16 +3,16 @@ package org.bookmyshow.service;
 import jakarta.inject.Singleton;
 import org.bookmyshow.model.Movie;
 import org.bookmyshow.model.MovieShow;
-import org.bookmyshow.repository.MovieDAOInterface;
+import org.bookmyshow.repository.MovieRepository;
 
 import java.util.List;
 
 @Singleton
 public class MovieService {
 
-    private final MovieDAOInterface movieDAO;
+    private final MovieRepository movieDAO;
 
-    public MovieService(final MovieDAOInterface movieDAO) {
+    public MovieService(final MovieRepository movieDAO) {
         this.movieDAO = movieDAO;
     }
 

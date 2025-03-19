@@ -1,9 +1,9 @@
 package org.bookmyshow.repository.impl;
 
-import org.bookmyshow.database.PostgreSQLConnection;
+import org.bookmyshow.datasource.PostgreSQLConnection;
 import org.bookmyshow.model.Booking;
 import org.bookmyshow.model.User;
-import org.bookmyshow.repository.UserDashboardDAOInterface;
+import org.bookmyshow.repository.UserDashboardRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class UserDashboardDAO implements UserDashboardDAOInterface {
+public class UserDashboardDAO implements UserDashboardRepository {
 
     private static final Logger logger = Logger.getLogger(UserDashboardDAO.class.getName());
 

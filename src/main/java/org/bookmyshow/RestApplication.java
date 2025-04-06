@@ -37,7 +37,7 @@ public class RestApplication extends Application {
         protected void configure() {
 
             bind(UserRepositoryImpl.class).to(UserRepository.class);
-            bind(UserDashboardDAO.class).to(UserDashboardRepository.class);
+            bind(UserDashboardImpl.class).to(UserDashboardRepository.class);
             bind(BookingRepositoryImpl.class).to(BookingRepository.class);
             bind(MovieShowRepositoryImpl.class).to(ShowRepository.class);
             bind(ValidationRepositoryImpl.class).to(ValidationRepository.class);

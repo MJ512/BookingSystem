@@ -2,6 +2,7 @@ package org.bookmyshow.service;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.transaction.Transactional;
 import org.bookmyshow.repository.BookingRepository;
 import org.bookmyshow.repository.SeatRepository;
 import org.bookmyshow.repository.ShowRepository;
@@ -33,6 +34,7 @@ public class BookingService {
         this.seatDAO = seatDAO;
     }
 
+    @Transactional
     public final int bookSeat(final Booking booking) {
         logger.info("Booking request received for Show ID: " + booking.getMovieShowId());
 

@@ -16,11 +16,12 @@ public class SeatRepositoryImpl implements SeatRepository {
 
     private static final Logger logger = Logger.getLogger(SeatRepositoryImpl.class.getName());
 
-    public final boolean mapSeatsToBooking(final int bookingId, final List<Integer> seatIds) {
-        final String insertQuery = "INSERT INTO booked_seats (booking_id, seat_id) VALUES (?, ?)";
+    @Override
+    public boolean mapSeatsToBooking(int bookingId, List<Integer> seatIds) {
+        String sql = "INSERT INTO booked_seats (booking_id, seat_id) VALUES (?, ?)";
 
         try (Connection connection = PostgreSQLConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             connection.setAutoCommit(false);
 
@@ -34,14 +35,17 @@ public class SeatRepositoryImpl implements SeatRepository {
 
             if (updatedRows.length != seatIds.size()) {
                 connection.rollback();
-                throw new BookingException("Failed to insert all seats for booking ID: " + bookingId);
+                throw new BookingException("Not all seats could be booked. Rolling back.");
             }
 
             connection.commit();
             return true;
+
         } catch (SQLException e) {
-            logger.severe("Failed to map seats to booking: " + e.getMessage());
-            throw new BookingException("Database error while mapping seats.", e);
+            if ("23505".equals(e.getSQLState())) {
+                throw new BookingException("One or more selected seats are already booked.", e);
+            }
+            throw new BookingException("Database error during booking.", e);
         }
     }
 

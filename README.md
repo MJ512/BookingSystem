@@ -13,7 +13,7 @@ The project is under active development and follows a modular and scalable desig
 - User registration and login
 - Book movie tickets for available shows
 - Cancel existing bookings
-- Modify User Information
+- Modify bookings
 
 ---
 

@@ -1,0 +1,8 @@
+target/
+*.class
+*.war
+*.jar
+application.properties
+db.properties
+*.env
+.idea/
